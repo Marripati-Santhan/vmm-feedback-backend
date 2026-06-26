@@ -28,7 +28,8 @@ router.post("/submit", (req, res) => {
     (err, result) => {
       if (err) {
         return res.status(500).json({
-          message: "Error saving review",
+         message: err.message,
+error: err
         });
       }
 
@@ -54,8 +55,8 @@ router.get("/ratings", (req, res) => {
   db.query(sql, (err, result) => {
     if (err) {
       return res.status(500).json({
-        message:
-          "Error fetching ratings",
+       message: err.message,
+error: err
       });
     }
 

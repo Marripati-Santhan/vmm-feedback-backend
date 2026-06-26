@@ -8,10 +8,13 @@ router.get("/", (req, res) => {
 
   db.query(sql, (err, result) => {
     if (err) {
-      return res.status(500).json({
-        message: "Error fetching employees",
-      });
-    }
+  console.log("Employee Route Error:", err);
+
+  return res.status(500).json({
+    message: err.message,
+    error: err,
+  });
+}
 
     res.status(200).json(result);
   });
