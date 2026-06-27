@@ -2,7 +2,9 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 
+// ================================
 // Submit Store Feedback
+// ================================
 router.post("/", (req, res) => {
 
   const {
@@ -29,12 +31,14 @@ router.post("/", (req, res) => {
     (err, result) => {
 
       if (err) {
+
         console.log("Store Feedback Error:", err);
 
-return res.status(500).json({
-  message: err.message,
-  error: err,
-});
+        return res.status(500).json({
+          message: err.message,
+          error: err,
+        });
+
       }
 
       res.status(200).json({
@@ -45,6 +49,10 @@ return res.status(500).json({
   );
 
 });
+
+// ================================
+// Customer Satisfaction Score
+// ================================
 router.get("/stats", (req, res) => {
 
   const sql = `
@@ -64,12 +72,16 @@ router.get("/stats", (req, res) => {
     }
 
     res.status(200).json(result[0]);
+
   });
 
 });
 
-// Recent Store Feedbacks
+// ================================
+// Recent 3 Feedbacks (Homepage)
+// ================================
 router.get("/", (req, res) => {
+
   const sql = `
     SELECT *
     FROM store_feedback
@@ -78,32 +90,62 @@ router.get("/", (req, res) => {
   `;
 
   db.query(sql, (err, result) => {
+
     if (err) {
       return res.status(500).json({
-        message:
-          "Error fetching feedback",
+        message: "Error fetching feedback",
       });
     }
 
     res.json(result);
+
   });
+
 });
 
-// Total Store Feedbacks
-router.get(
-  "/total-store-feedbacks",
-  (req, res) => {
-    const sql =
-      "SELECT COUNT(*) AS total FROM store_feedback";
+// ================================
+// All Feedbacks (Admin Dashboard)
+// ================================
+router.get("/all", (req, res) => {
 
-    db.query(sql, (err, result) => {
-      if (err) {
-        return res.status(500).json(err);
-      }
+  const sql = `
+    SELECT *
+    FROM store_feedback
+    ORDER BY created_at DESC
+  `;
 
-      res.json(result[0]);
-    });
-  }
-);
+  db.query(sql, (err, result) => {
+
+    if (err) {
+      return res.status(500).json({
+        message: "Error fetching feedback",
+      });
+    }
+
+    res.json(result);
+
+  });
+
+});
+
+// ================================
+// Total Store Feedback Count
+// ================================
+router.get("/total-store-feedbacks", (req, res) => {
+
+  const sql =
+    "SELECT COUNT(*) AS total FROM store_feedback";
+
+  db.query(sql, (err, result) => {
+
+    if (err) {
+      return res.status(500).json(err);
+    }
+
+    res.json(result[0]);
+
+  });
+
+});
 
 module.exports = router;
