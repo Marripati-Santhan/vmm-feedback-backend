@@ -74,7 +74,7 @@ router.get("/", (req, res) => {
     SELECT *
     FROM store_feedback
     ORDER BY created_at DESC
-    LIMIT 5
+    LIMIT 3
   `;
 
   db.query(sql, (err, result) => {
